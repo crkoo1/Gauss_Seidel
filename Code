@@ -1,0 +1,224 @@
+% MTE204_Project1.m
+
+% For Circuit 1: 
+fprintf('Circuit 1:\n');
+% In the Gauss Seidel Solution, equations were set up in such a way that 
+% the diagonal row do not have a value of 0. 
+A = [1, 0, 0, 0, 0, -1;
+     0, 20, 2, 5, -5, 0;
+     0, 0, 1, -1, 0, 0;
+     0, -1, 0, 1, 0, 0;
+     1, -1, 0, 0, -1, 0;
+     10, 0, 0, 0, 5, 25];
+b = [0; 0; 0; 0; 0; 200];
+
+% Relaxation factor
+% In this set of equations, under-relaxation was used. Otherwise the
+% Gauss-Seidel would not converge within our maximum number of iterations
+omega = 0.85;
+
+% This value would inprove stability and converge towards convergence
+% Tolerance for relative error
+tol = 1e-5; 
+
+% Maximum number of iterations
+max_iter = 500; 
+
+% Function is created below
+x = gauss_seidel_relax(A, b, omega, tol, max_iter);
+
+% Assign the solution to meaningful variable names
+I1 = x(1); % Current between node 1 and 2
+I2 = x(2); % Current between node 2 and 3
+I3 = x(3); % Current between node 3 and 4
+I4 = x(4); % Current between node 4 and 5
+I5 = x(5); % Current between node 2 and 5
+I6 = x(6); % Current between node 5 and 6
+
+% Display the solution with descriptive names
+fprintf('I1 = %.4f A\n', I1);
+fprintf('I2 = %.4f A\n', I2);
+fprintf('I3 = %.4f A\n', I3);
+fprintf('I4 = %.4f A\n', I4);
+fprintf('I5 = %.4f A\n', I5);
+fprintf('I6 = %.4f A\n', I6);
+
+% Now using the equation solver
+% Installed the "Symbolic Math Toolbox" 
+% If not installed, this code will not work
+syms i1 i2 i3 i4 i5 i6
+
+% Defining the system of equations
+eqn1 = i1 - i6 == 0;
+eqn2 = 20*i2 + 2*i3 + 5*i4 - 5*i5 == 0;
+eqn3 = i3 - i4 == 0;
+eqn4 = -i2 + i4 == 0;
+eqn5 = i1 - i2 - i5 == 0;
+eqn6 = 10*i1 + 5*i5 + 25*i6 == 200;
+
+% Solve the system of equations
+sol1 = solve([eqn1, eqn2, eqn3, eqn4, eqn5, eqn6], [i1, i2, i3, i4, i5, i6]);
+
+% Extract the solutions
+i1_num = double(sol1.i1);
+i2_num = double(sol1.i2);
+i3_num = double(sol1.i3);
+i4_num = double(sol1.i4);
+i5_num = double(sol1.i5);
+i6_num = double(sol1.i6);
+
+% Leaving some space between the Gauss-Seidel and the numerical solution
+fprintf('\n')
+% Display the results
+disp('Numerical solution for the system of equations:');
+disp(['i1 = ', num2str(i1_num), ' A']);
+disp(['i2 = ', num2str(i2_num), ' A']);
+disp(['i3 = ', num2str(i3_num), ' A']);
+disp(['i4 = ', num2str(i4_num), ' A']);
+disp(['i5 = ', num2str(i5_num), ' A']);
+disp(['i6 = ', num2str(i6_num), ' A']);
+
+
+% Leaving some space between results of circuit 1 and 3
+fprintf('\n\n')
+
+
+
+
+% For Circuit 3: 
+% Some recurring comments may be emitted while coding for the next circuit
+% as both circuits have similar thinking process
+fprintf('Circuit 3:\n');
+
+% Circuit 3 Matrix: 
+A = [1, -1, -1, 0, 0;
+     0, 1, 0, 1, -1;
+     5, 0, 15, 0, 0;
+     0, 0, 0, 20, 25;
+     0, 10, -15, 0, 25];
+b = [0; 0; 80; 50; 0];
+
+% Relaxation factor
+% In this set of equations, under-relaxation was used. Otherwise the
+% Gauss-Seidel would not converge within our maximum number of iterations
+omega = 0.8;
+
+% This value would inprove stability and converge towards convergence
+% Tolerance for relative error
+tol = 1e-5; 
+
+% Maximum number of iterations
+max_iter = 500; 
+
+% Called the same function x which is used for the Gauss-Seidel Solution
+x = gauss_seidel_relax(A, b, omega, tol, max_iter);
+
+% Assign the solution to meaningful variable names
+I1 = x(1); % Current passing through 5 ohm resistor
+I2 = x(2); % Current passing through 10 ohm resistor
+I3 = x(3); % Current passing through 15 ohm resistor
+I4 = x(4); % Current passing through 20 ohm resistor
+I5 = x(5); % Current passing through 25 ohm resistor
+
+% Display the solution with descriptive names
+fprintf('I1 = %.4f A\n', I1);
+fprintf('I2 = %.4f A\n', I2);
+fprintf('I3 = %.4f A\n', I3);
+fprintf('I4 = %.4f A\n', I4);
+fprintf('I5 = %.4f A\n', I5);
+
+% Now using the equation solver
+syms i1 i2 i3 i4 i5
+eqn1 = i1 - i2 - i3 == 0;
+eqn2 = i2 + i4 -i5 == 0;
+eqn3 = 5*i1 + 15*i3 == 80;
+eqn4 = 20*i4 + 25*i5 == 50;
+eqn5 = 10*i2 - 15*i3 + 25*i5 == 0;
+
+
+sol2 = solve([eqn1, eqn2, eqn3, eqn4, eqn5], [i1, i2, i3, i4, i5]);
+i1_ = double(sol2.i1);
+i2_ = double(sol2.i2);
+i3_ = double(sol2.i3);
+i4_ = double(sol2.i4);
+i5_ = double(sol2.i5);
+
+fprintf('\n')
+disp('Numerical solution for the system of equations:');
+disp(['i1 = ', num2str(i1_), ' xA']);
+disp(['i2 = ', num2str(i2_), ' A']);
+disp(['i3 = ', num2str(i3_), ' A']);
+disp(['i4 = ', num2str(i4_), ' A']);
+disp(['i5 = ', num2str(i5_), ' A']);
+
+
+function x = gauss_seidel_relax(A, b, omega, tol, max_iter)
+    % The different inputs are as follows: 
+    % A: Coefficient matrix (6x6)
+    % b: Right-hand side vector (6x1)
+    % omega: Relaxation factor 
+    % tol: Tolerance for the relative error
+    % max_iter: Maximum number of iterations
+
+    % Number of equations
+    n = length(b);
+
+    % Initial guess
+    % We guessed that initial values are 0 here
+    % So an array of zeros were used to initialize the function
+    x = zeros(n, 1);
+
+    % Initialize relative error
+    % Set intial relative error as a very large value as we assume that
+    % current x is 0
+    rel_error = inf;
+
+    % Iteration counter
+    iter = 0;
+
+    % Gauss-Seidel iteration with relaxation
+    while rel_error > tol && iter < max_iter
+        x_old = x;
+        % Gauss_Seidel is performed from right to left column and then down 
+        % the row. 
+        % i defines the row number and j is the column number
+        for i = 1:n
+            % Summation part
+            sigma = 0;
+            for j = 1:n
+                if j ~= i
+                    sigma = sigma + A(i, j) * x(j);
+                end
+            end
+            % Update with relaxation
+            x(i) = (1 - omega) * x_old(i) + omega * (b(i) - sigma) / A(i, i);
+        end
+
+        % Calculate relative error
+        % As per lecture slides, 
+        % Relative error is the absolute difference between the new x and
+        % the old x divided by the new x (new may be referred as the
+        % current in some cases)
+        rel_error = norm(x - x_old) / norm(x);
+
+        % Increment iteration counter
+        iter = iter + 1;
+    end
+
+    % Check if solution converged
+    if iter == max_iter
+        % if we are having an error where it diverges or it takes to long
+        % to converge, it will display the following: 
+        disp('Gauss-Seidel method did not converge within the maximum number of iterations');
+    else
+        % This is an autocheck to see which helps us to see the number of
+        % iterations required for the Gauss-Seidel to converge. 
+        % Using this value, we will alter the relaxation point in such a
+        % way to decrease the magnitude of this value. 
+        fprintf('Gauss-Seidel method converged in %d iterations\n', iter);
+    end
+    % This function display the Relative Error
+    % The %.10f\n' is used to increase the number to 10 decimal places. 
+    % fprintf is used because we have more control on the formatting
+    fprintf('Relative Error is: %.10f\n', rel_error);
+end
